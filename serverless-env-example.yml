@@ -1,0 +1,32 @@
+# This file is used to store environment variables for the serverless.yml file
+
+# You will need to change this value after you deploy you app for the first time. The value comes from the
+# output of the serverless deploy command
+API_GATEWAY_ENDPOINT:
+  dev: "xxxxxxxx.execute-api.xxxxxxxx.amazonaws.com/dev"
+
+# You will need to change these values after you register your connector with SmartThings. The client secret is only
+# shown once when you register your connector, so make note of it right away. If you lose it you will need to
+# re-register your connector.
+ST_CLIENT_ID:
+  dev: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+ST_CLIENT_SECRET:
+  dev: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx...xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+# You can leave these values as they are if you are running in the global production SmartThings environment. If you are
+# running in another environment you will need to change these values to match the environment you are running in.
+PERMITTED_REDIRECT_URLS:
+  dev: "https://c2c-us.smartthings.com/oauth/callback,https://c2c-eu.smartthings.com/oauth/callback,https://c2c-ap.smartthings.com/oauth/callback"
+
+# You can leave these values at they are, but ypu may want to change them to make your connector more secure
+CLIENT_ID:
+  dev: a4a278fd-0ac1-47d9-b93a-987e3f401015
+CLIENT_SECRET:
+  dev: 830c120e-a791-453c-94b7-302fea58a823
+
+# You can leave these values as they are, or change them to use different table names
+DYNAMODB_TABLE_NAME:
+  dev: st-schema-websocket-example
+DYNAMODB_SESSION_TABLE_NAME:
+  dev: st-schema-websocket-example-sessions
+

@@ -1,0 +1,179 @@
+<html lang="en">
+<head>
+  <title>Devices</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/png" href="https://www.smartthings.com/favicon-32x32-580b9e865a8394c3ea0ecdd0143b277d.png" sizes="32x32">
+  <link
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          rel="stylesheet" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+          crossorigin="anonymous" />
+  <link
+          href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"
+          rel="stylesheet" />
+  <link
+          href='/stylesheets/style.css'
+          rel='stylesheet' />
+  <script
+          src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.5.0/knockout-min.js"></script>
+  <script
+          src="https://code.jquery.com/jquery-3.4.1.min.js"
+          integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+          crossorigin="anonymous"></script>
+  <script
+          src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
+          integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU="
+          crossorigin="anonymous"></script>
+  <script
+          src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+          integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+          crossorigin="anonymous"></script>
+  <script
+          src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+          integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+          crossorigin="anonymous"></script>
+
+  <script src="/javascript/property.js"></script>
+  <script src="/javascript/device.js"></script>
+  <script src="/javascript/devicesviewmodel.js"></script>
+  <script src="/javascript/devices.js"></script>
+
+</head>
+<body>
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="dropleft" id="dropdownMenu" style="float: right">
+        <button class="btn" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">...</button>
+        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+          <a class="dropdown-item" href="#" data-bind="click: showAddDeviceDialog">Add Device</a>
+          <a class="dropdown-item" href="#" data-bind="click: showDeleteDeviceDialog">Delete Devices</a>
+          <a class="dropdown-item" href="/logout">Sign Out</a>
+        </div>
+      </div>
+      <h3 data-bind="text: username"></h3>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-lg-12">
+      <div data-bind="foreach: devices">
+        <div class="deviceTile">
+          <img class="offline-icon" src="/images/offline-icon.svg" data-bind="visible: offline">
+          <span class="deviceControl" data-bind="click: toggleState, class: tileState">
+            <span class="deviceStatus" data-bind="text: mainState"></span>
+          </span>
+          <a class="displayName" data-bind="click: showDetailDialog, text: displayName, attr: {id: externalId}"></a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row" data-bind="ifnot: hasDevices">
+    <div class="col-lg-12">
+      <% if (redirectButton) { %>
+      <p>
+        Click the link below or the menu in the upper right of the page to add devices to this account.
+        After adding devices click <em>Done</em> to finish authenticating with SmartThings and import
+        those devices into your SmartThings account.
+      </p>
+      <% } %>
+      <p>
+        <a href="#" id="addDeviceLink" data-bind="click: showAddDeviceDialog">Create your first device</a>
+      </p>
+    </div>
+  </div>
+  <% if (redirectButton) { %>
+  <div class="row" data-bind="if: hasDevices">
+    <div class="col-lg-12">
+      <form action="/oauth/redirect">
+        <div class="form-group" id="oauth-buttons">
+          <input class="btn btn-secondary" type="submit" name="done" value="Done"/>
+        </div>
+      </form>
+    </div>
+  </div>
+  <% } %>
+</div>
+
+<div id="addDeviceDialog" title="Add Device" style="display: none;">
+  <form action="/devices/create" method="POST" data-bind="submit: createDevice">
+    <div class="form-group">
+      <label for="deviceType">Device Type: </label>
+      <select class="custom-select" name="deviceType" id="deviceType" data-bind="options: deviceTypes">
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="displayName">Device Name: </label>
+      <input type="text" name="displayName" id="displayName" class="form-control"/>
+    </div>
+    <div class="form-group" style="display: none;">
+      <label for="expires_in">Token expiry (in seconds): </label>
+      <input type="text" class="form-control" value="300000000" name="expires_in" id="expires_in"/>
+    </div>
+    <input class="btn btn-primary" type="submit" name="create" value="Create"/>
+    <input id="cancelAddDeviceDialog" class="btn" type="button" value="Cancel" data-bind="click: closeAddDeviceDialog"/>
+  </form>
+</div>
+
+<div id="deleteDevicesDialog" title="Delete Devices" style="display: none;">
+  <form action="/devices/delete" method="POST" data-bind="submit: deleteDevice">
+    <div class="form-group" data-bind="foreach: devices">
+      <div class="deleteList">
+        <input type="checkbox" name="deviceIds" data-bind="attr: {value: externalId}">
+        <label data-bind="text: displayName"></label>
+      </div>
+    </div>
+    <input class="btn btn-danger" type="submit" name="delete" value="Delete"/>
+    <input id="cancelDeleteDevicesDialog" class="btn" type="button" value="Cancel" data-bind="click: closeDeleteDeviceDialog"/>
+  </form>
+</div>
+
+<div id="deviceDetailDialog" title="Device Details" data-bind="with: selectedDevice" style="display: none;">
+  <div id="general-spinner" class="loading"></div>
+  <h4 data-bind="text: displayName"></h4>
+  <form onsubmit="return false;">
+    <div data-bind="foreach: displayStates">
+
+      <div class="form-group" data-bind="if: isEnumControl">
+        <label data-bind="text: displayName"></label>
+        <select class="custom-select" data-bind="value: propertyValue, options: enumValues">
+        </select>
+      </div>
+
+      <div class="form-group" data-bind="if: isMultiControl">
+        <label data-bind="text: displayName"></label>
+        <select class="custom-select" data-bind="selectedOptions: propertyValue, options: multiValues" multiple="multiple">
+        </select>
+      </div>
+
+      <div class="form-group" data-bind="if: isSliderControl">
+        <label data-bind="text: displayName"></label>
+        <span data-bind="text: propertyValue"></span>
+        <input type="range" class="form-control-range" data-bind="attr: {min: sliderMin, max: sliderMax}, value: propertyValue">
+      </div>
+
+      <div class="form-group" data-bind="if: isNumberControl">
+        <label data-bind="text: displayName"></label>
+        <input type="number" class="number-control" data-bind="value: propertyValue">
+      </div>
+
+      <div class="form-group" data-bind="if: isFieldControl">
+        <label data-bind="text: displayName"></label>
+        <input type="text" class="custom-control" data-bind="value: propertyValue">
+      </div>
+
+      <div class="form-group" data-bind="if: isObjectControl">
+        <label data-bind="text: displayName"></label>
+        <textarea class="custom-control" data-bind="value: jsonValue"></textarea>
+      </div>
+
+      <div class="form-group" data-bind="if: isBooleanControl">
+        <label data-bind="text: displayName">
+        </label>
+        <input type="checkbox" data-bind="checked: propertyValue">
+      </div>
+    </div>
+  </form>
+</div>
+
+</body>
+</html>
