@@ -158,7 +158,8 @@ function authRequestHandler(req, res) {
 }
 
 async function authRedirect(req, res) {
-	const code = await db.addToken(req.session.username, 84600);
+	const expiresIn = req.session.expires_in ? parseInt(req.session.expires_in) : 84600;
+	const code = await db.addToken(req.session.username, expiresIn);
 	let redirectUri = req.session.redirect_uri;
 	let location = `${redirectUri}${redirectUri.includes('?') ? '&' : '?'}code=${code}`;
 	if (req.session.client_state) {

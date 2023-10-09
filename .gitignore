@@ -68,3 +68,6 @@ typings/
 
 # Intellij
 .idea
+
+# Serverless framework
+.serverless
