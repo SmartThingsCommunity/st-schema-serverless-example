@@ -141,9 +141,10 @@ aws lambda add-permission \
 
 ## Register your web application with SmartThings as an ST Schema connector
 
-We currently recommend registering you ST Schema connector using the Developer Workspace. 
-You can also use the SmartThings CLI but there's currently no support for installing the connector
-if you use the CLI. New tools are coming soon that will allow you to install connectors created with the CLI.
+We recommend registering your Schema Connector using the SmartThings CLI. 
+When you are ready to distribute your Connector to internal testers, 
+you can use the [invitations feature](https://developer.smartthings.com/docs/devices/cloud-connected/st-schema-invites)
+to test and iterate your Connector with other users without needing to publish to the SmartThings catalog. 
 
 ### Using the Developer Workspace
 
