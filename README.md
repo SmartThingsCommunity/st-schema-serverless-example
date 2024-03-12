@@ -195,7 +195,9 @@ create a location if you have not already done so.
 Next, use the CLI to create a [SmartThings Schema invitation](https://developer.smartthings.com/docs/devices/cloud-connected/st-schema-invites) 
 for your new integration: 
 
-`$ smartthings invites:schema:create`
+```bash 
+$ smartthings invites:schema:create
+```
 
 The CLI will step you through the invitation creation process and generate an `Accept URL`. Visit the `Accept URL` 
 to install your integration to a location associated with your Samsung account. After completing the invitation 
