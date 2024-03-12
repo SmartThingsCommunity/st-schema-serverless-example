@@ -214,7 +214,7 @@ Learn more about invitations on our [developer documentation portal](https://dev
 
 ## Control devices from SmartThings and your web application
 
-After installing your connector, you should see your in the SmartThings mobile app. You can control them from the 
+After installing your connector, you should see your devices in the SmartThings mobile app. You can control them from the 
 mobile app and from the web application. The status should be updated in both places.
 
 Each device in the mobile app has a button on the dashboard page that controls the main capability of the device. You 
