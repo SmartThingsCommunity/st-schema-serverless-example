@@ -190,12 +190,16 @@ application only interacts with SmartThings after you have installed an ST Schem
 Install the SmartThings mobile app from the [iOS App Store](https://apps.apple.com/us/app/smartthings/id1222822904)
 or [Google Play Store](https://play.google.com/store/apps/details?id=com.samsung.android.oneconnect),
 log in with the same email address and password used for your developer workspace account, and 
-create a location (if you have not already done so)
+create a location if you have not already done so.
 
-Put the SmartThings mobile app in [developer mode](https://developer.smartthings.com/docs/devices/cloud-connected/test-your-connector#enable-developer-mode-in-the-smartthings-app) 
-and tap the "+" button at the top to add a device. Select the _Partner devices_ option, and you should see a _My Testing Devices_ menu item. 
-Tap on it and you should see your connector name. Tap on it to install your connector, using the same email
-and password you used to create your account in the web application.
+Next, use the CLI to create a [SmartThings Schema invitation](https://developer.smartthings.com/docs/devices/cloud-connected/st-schema-invites) 
+for your new integration: 
+
+`$ smartthings invites:schema:create`
+
+The CLI will step you through the invitation creation process and generate an `Accept URL`. Visit the `Accept URL` 
+to install your integration to a location associated with your Samsung account. After completing the invitation 
+acceptance process, your integration should now be visible from the SmartThings app when logged in with your Samsung account. 
 
 ### (Optional) Invite others to install and test your Connector 
 
