@@ -1,8 +1,8 @@
 ST Schema Serverless Example
 ============================
 
-This reference application includes an ST Schema C2C connector, an OAuth2 server for authenticating
-from the SmartThings mobile app, and web UI for creating, deleting and controlling devices.
+This reference application includes an ST Schema Cloud-to-Cloud (C2C) connector, an OAuth2 server for authenticating
+from the SmartThings mobile app, and a web UI for creating, deleting and controlling devices.
 
 The app uses the [st-schema SDK](https://www.npmjs.com/package/st-schema), the [express](https://www.npmjs.com/package/express) web server, [EJS](https://ejs.co/), and the [Knockout](https://knockoutjs.com/documentation/introduction.html) UI library.
 It's configured to be deployed to Amazon Web Services using the [Serverless](https://www.serverless.com/) framework.
@@ -20,8 +20,8 @@ sensors.
 - An [Amazon Web Services account](https://aws.amazon.com/)
 - The [AWS CLI](https://aws.amazon.com/cli/) installed and configured
 - The [Serverless](https://www.serverless.com/) framework installed
-- A [SmartThings Developer account](https://smartthings.developer.samsung.com/workspace/)
-- The [SmartThings CLI]() installed (optional)
+- A [Samsung account](https://v3.account.samsung.com/dashboard/intro)
+- The [SmartThings CLI](https://github.com/SmartThingsCommunity/smartthings-cli) installed
 - The SmartThings mobile app (available from the [iOS App Store](https://apps.apple.com/us/app/smartthings/id1222822904) or [Google Play Store](https://play.google.com/store/apps/details?id=com.samsung.android.oneconnect))
 
 
@@ -139,39 +139,11 @@ aws lambda add-permission \
 --principal 906037444270 
 ```
 
-## Register your web application with SmartThings as an ST Schema connector
+## Create your Connector with the SmartThings CLI
 
-We currently recommend registering you ST Schema connector using the Developer Workspace. 
-You can also use the SmartThings CLI but there's currently no support for installing the connector
-if you use the CLI. New tools are coming soon that will allow you to install connectors created with the CLI.
-
-### Using the Developer Workspace
-
-Go to [SmartThings Developer Workspace](https://smartthings.developer.samsung.com/workspace/) and create a new 
-ST-Schema cloud connector. Choose the _AWS Lambda_ hosting option.
-
-Enter the ARN of your `schema` Lambda function, the one you just authorized, in the region you 
-deployed your connector. Remember to the trailing version number.
-
-Fill in all the required fields on the next page using the corresponding values from your `serverless-env.yml` file
-and the serverless framework output. For example:
-```
-Client ID:                a4a278fd-0ac1-47d9-b93a-987e3f401015
-Client Secret:            830c120e-a791-453c-94b7-302fea58a823
-Authorization URI:        https://xxxxxxxxxxxxxxxxxxxxxxxx.lambda-url.us-east-1.on.aws/oauth/login
-Token URI:                https://xxxxxxxxxxxxxxxxxxxxxxxx.lambda-url.us-east-1.on.aws/oauth/token
-Alert Notification Email: youremail@whatever.com
-```
-
-After clicking _Next_ you'll be asked to name your connector and upload an icon image.
-
-After you create your connector in the Developer Workspace, copy the client ID and client secret values
-it shows you into the `ST_CLIENT_ID` and `ST_CLIENT_SECRET` entries in the `serverless-env.yml` file.
-
-### Using the SmartThings CLI
-
-To create a connector using the SmartThings CLI, first install the CLI and log in to your SmartThings account.
-copy the following information into a JSON file, for example `myapp.json`. Replace the values with your own.
+To create a connector using the SmartThings CLI, first install the CLI. If you have not yet logged into your 
+Samsung account in the CLI, you will be prompted to do so when running the CLI commands below.
+Copy the following information into a JSON file, for example `myapp.json`. Replace the values with your own.
 ```json
 {
   "appName": "ST Schema Serverless Example",
@@ -197,6 +169,7 @@ The CLI will print out the client ID and client secret values. Copy these into t
 entries in the `serverless-env.yml` file.
 
 ## Deploy your web application again
+
 ```bash
 serverless deploy
 ```
@@ -204,12 +177,12 @@ serverless deploy
 ## Create an account in your application
 
 Visit the website URL (`https://xxxxxxxxxxxxxxxxxxxxxxxx.lambda-url.xxxxxxxxx.on.aws/`) and click the _Get Started_ link.
-Enter an email address and password and click _Create New Account_. Once you are signed in click the
+Enter an email address and password and click _Create New Account_. Once you are signed in, click the
 _Create your first device_ link to create a device. You can create more devices, delete devices, and log
 out using the [...] menu at the top of the page. 
 
 This web application represents a partner device application. The email and password do not need to be the same
-as your SmartThings account (and the password should generally not be the same, for best security practices). The
+as your Samsung account (and the password should generally not be the same, for best security practices). The
 application only interacts with SmartThings after you have installed an ST Schema connector.
 
 ## Install your ST Schema Connector
@@ -217,16 +190,31 @@ application only interacts with SmartThings after you have installed an ST Schem
 Install the SmartThings mobile app from the [iOS App Store](https://apps.apple.com/us/app/smartthings/id1222822904)
 or [Google Play Store](https://play.google.com/store/apps/details?id=com.samsung.android.oneconnect),
 log in with the same email address and password used for your developer workspace account, and 
-create a location (if you have not already done so)
+create a location if you have not already done so.
 
-Put the SmartThings mobile app in [developer mode](https://smartthings.developer.samsung.com/docs/guides/testing/developer-mode.html) and tap the "+" button at the top to
-add a device. Select the _Partner devices_ option, and you should see a _My Testing Devices_ menu item. 
-Tap on it and you should see your connector name. Tap on it to install your connector, using the same email
-and password you used to create your account in the web application.
+Next, use the CLI to create a [SmartThings Schema invitation](https://developer.smartthings.com/docs/devices/cloud-connected/st-schema-invites) 
+for your new integration: 
+
+```bash 
+$ smartthings invites:schema:create
+```
+
+The CLI will step you through the invitation creation process and generate an `Accept URL`. Visit the `Accept URL` 
+to install your integration to a location associated with your Samsung account. After completing the invitation 
+acceptance process, your integration should now be visible from the SmartThings app when logged in with your Samsung account. 
+
+### (Optional) Invite others to install and test your Connector 
+
+[SmartThings Schema invitations](https://developer.smartthings.com/docs/devices/cloud-connected/st-schema-invites) allow you 
+to invite other users to test your Schema integration.  
+When you are ready to distribute your Connector to internal testers, 
+you can use invitations to test and iterate your Connector with other users without 
+needing to publish to the SmartThings catalog. 
+Learn more about invitations on our [developer documentation portal](https://developer.smartthings.com/docs/devices/cloud-connected/st-schema-invites).
 
 ## Control devices from SmartThings and your web application
 
-After installing your connector, you should see your in the SmartThings mobile app. You can control them from the 
+After installing your connector, you should see your devices in the SmartThings mobile app. You can control them from the 
 mobile app and from the web application. The status should be updated in both places.
 
 Each device in the mobile app has a button on the dashboard page that controls the main capability of the device. You 
